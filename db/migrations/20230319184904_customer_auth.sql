@@ -4,8 +4,8 @@ CREATE TABLE "customer_auth" (
     "id" uuid PRIMARY KEY,
     "customer_id" uuid UNIQUE NOT NULL,
     "is_verified" boolean NOT NULL,
-    "opt" varchar(10) NOT NULL,
-    "channel" varchar(15) NOT NULL,
+    "opt" varchar(50) NOT NULL,
+    "channel" varchar(50) NOT NULL,
     "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 ALTER TABLE "customer_auth" ADD FOREIGN KEY ("customer_id") REFERENCES "customers" ("id");

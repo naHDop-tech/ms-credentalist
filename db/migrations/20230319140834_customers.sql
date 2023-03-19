@@ -2,8 +2,8 @@
 -- +goose StatementBegin
 CREATE TABLE "customers" (
     "id" uuid PRIMARY KEY,
-    "password" varchar(50) NOT NULL,
-    "user_name" varchar(50) UNIQUE NOT NULL,
+    "password" varchar(255) NOT NULL,
+    "user_name" varchar(200) UNIQUE NOT NULL,
     "user_id" uuid UNIQUE NOT NULL,
     "created_at" timestamptz NOT NULL DEFAULT (now()),
     "updated_at" timestamptz

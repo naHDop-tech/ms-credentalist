@@ -11,12 +11,12 @@ import (
 	"github.com/google/uuid"
 )
 
-const createAuthSettings = `-- name: CreateAuthSettings :one
+const createAuthRecord = `-- name: CreateAuthRecord :one
 INSERT INTO customer_auth ("id", "is_verified", "opt", "channel", "customer_id")
 VALUES ($1, $2, $3, $4, $5) RETURNING "id"
 `
 
-type CreateAuthSettingsParams struct {
+type CreateAuthRecordParams struct {
 	ID         uuid.UUID `json:"id"`
 	IsVerified bool      `json:"is_verified"`
 	Opt        string    `json:"opt"`
@@ -24,8 +24,8 @@ type CreateAuthSettingsParams struct {
 	CustomerID uuid.UUID `json:"customer_id"`
 }
 
-func (q *Queries) CreateAuthSettings(ctx context.Context, arg CreateAuthSettingsParams) (uuid.UUID, error) {
-	row := q.db.QueryRowContext(ctx, createAuthSettings,
+func (q *Queries) CreateAuthRecord(ctx context.Context, arg CreateAuthRecordParams) (uuid.UUID, error) {
+	row := q.db.QueryRowContext(ctx, createAuthRecord,
 		arg.ID,
 		arg.IsVerified,
 		arg.Opt,
@@ -37,13 +37,13 @@ func (q *Queries) CreateAuthSettings(ctx context.Context, arg CreateAuthSettings
 	return id, err
 }
 
-const getAuthSettingsByCustomerId = `-- name: GetAuthSettingsByCustomerId :one
+const getAuthRecordByCustomerId = `-- name: GetAuthRecordByCustomerId :one
 SELECT id, customer_id, is_verified, opt, channel, created_at FROM customer_auth
 WHERE customer_id = $1 ORDER BY created_at ASC LIMIT 1
 `
 
-func (q *Queries) GetAuthSettingsByCustomerId(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error) {
-	row := q.db.QueryRowContext(ctx, getAuthSettingsByCustomerId, customerID)
+func (q *Queries) GetAuthRecordByCustomerId(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error) {
+	row := q.db.QueryRowContext(ctx, getAuthRecordByCustomerId, customerID)
 	var i CustomerAuth
 	err := row.Scan(
 		&i.ID,
@@ -56,13 +56,13 @@ func (q *Queries) GetAuthSettingsByCustomerId(ctx context.Context, customerID uu
 	return i, err
 }
 
-const getAuthSettingsHistory = `-- name: GetAuthSettingsHistory :many
+const getAuthRecordHistory = `-- name: GetAuthRecordHistory :many
 SELECT id, customer_id, is_verified, opt, channel, created_at FROM customer_auth
 WHERE customer_id = $1 ORDER BY created_at ASC
 `
 
-func (q *Queries) GetAuthSettingsHistory(ctx context.Context, customerID uuid.UUID) ([]CustomerAuth, error) {
-	rows, err := q.db.QueryContext(ctx, getAuthSettingsHistory, customerID)
+func (q *Queries) GetAuthRecordHistory(ctx context.Context, customerID uuid.UUID) ([]CustomerAuth, error) {
+	rows, err := q.db.QueryContext(ctx, getAuthRecordHistory, customerID)
 	if err != nil {
 		return nil, err
 	}
@@ -91,13 +91,13 @@ func (q *Queries) GetAuthSettingsHistory(ctx context.Context, customerID uuid.UU
 	return items, nil
 }
 
-const getLastNotVerifiedRecord = `-- name: GetLastNotVerifiedRecord :one
+const getLastRecord = `-- name: GetLastRecord :one
 SELECT id, customer_id, is_verified, opt, channel, created_at FROM customer_auth
-WHERE customer_id = $1 AND is_verified = false ORDER BY created_at ASC LIMIT 1
+WHERE customer_id = $1 ORDER BY created_at ASC LIMIT 1
 `
 
-func (q *Queries) GetLastNotVerifiedRecord(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error) {
-	row := q.db.QueryRowContext(ctx, getLastNotVerifiedRecord, customerID)
+func (q *Queries) GetLastRecord(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error) {
+	row := q.db.QueryRowContext(ctx, getLastRecord, customerID)
 	var i CustomerAuth
 	err := row.Scan(
 		&i.ID,

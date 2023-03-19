@@ -8,6 +8,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/naHDop-tech/ms-credentalist/cmd/api"
+	opt_auth "github.com/naHDop-tech/ms-credentalist/domain/opt-auth"
 	"github.com/naHDop-tech/ms-credentalist/utils"
 )
 
@@ -37,7 +38,9 @@ func main() {
 	}
 
 	serverAddress := fmt.Sprintf("%s:%s", conf.AppHost, conf.AppPort)
-	server, err := api.NewServer(conn, conf)
+	optDomain := opt_auth.NewOptAuthDomain(conn)
+
+	server, err := api.NewServer(conn, conf, optDomain)
 	err = server.Start(serverAddress)
 	if err != nil {
 		log.Fatal("Server has not started", err)
