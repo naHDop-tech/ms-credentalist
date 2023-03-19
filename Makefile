@@ -1,6 +1,6 @@
 DB_NAME=credentialist
 DB_PASS=1qaz2wsx
-DB_USER=admin
+DB_USER=credo
 DB_HOST=0.0.0.0
 BD_PORT=5432
 
@@ -9,8 +9,8 @@ create_db:
     --name credentialist \
     -e POSTGRES_PASSWORD=1qaz2wsx \
     -e POSTGRES_DB=credentialist \
-    -e POSTGRES_USER=admin \
-    -e PGDATA=/var/lib/postgresql/data/ \
+    -e POSTGRES_USER=credo \
+    -e PGDATA=/var/lib/postgresql/data/pgdata \
     -v db:/var/lib/postgresql/data \
     -p 5432:5432 \
     postgres
@@ -27,4 +27,4 @@ migrate_down:
 migrate_file:
 	goose create $(file_name) sql
 start:
-	go run main.go
+	go run cmd/main.go

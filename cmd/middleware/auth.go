@@ -23,8 +23,7 @@ func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		if len(authorizationHeader) == 0 {
 			err := errors.New("authorization header has not provided")
 			response = r.New(nil, err, responser.UNAUTHORIZED)
-			ctx.JSON(response.Status, response)
-			//ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
+			ctx.AbortWithStatusJSON(response.Status, response)
 			return
 		}
 
@@ -32,8 +31,7 @@ func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		if len(fields) < 2 {
 			err := errors.New("authorization header invalid format")
 			response = r.New(nil, err, responser.UNAUTHORIZED)
-			ctx.JSON(response.Status, response)
-			//ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
+			ctx.AbortWithStatusJSON(response.Status, response)
 			return
 		}
 
@@ -41,8 +39,7 @@ func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		if authorizationType != authType {
 			err := errors.New("authorization header invalid type")
 			response = r.New(nil, err, responser.UNAUTHORIZED)
-			ctx.JSON(response.Status, response)
-			//ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
+			ctx.AbortWithStatusJSON(response.Status, response)
 			return
 		}
 
@@ -50,8 +47,7 @@ func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		payload, err := tokenMaker.VerifyToken(accessToken)
 		if err != nil {
 			response = r.New(nil, err, responser.UNAUTHORIZED)
-			ctx.JSON(response.Status, response)
-			//ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
+			ctx.AbortWithStatusJSON(response.Status, response)
 			return
 		}
 
