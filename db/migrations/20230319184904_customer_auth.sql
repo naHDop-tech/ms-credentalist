@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE "customer_auth" (
     "id" uuid PRIMARY KEY,
-    "customer_id" uuid UNIQUE NOT NULL,
+    "customer_id" uuid NOT NULL,
     "is_verified" boolean NOT NULL,
     "opt" varchar(50) NOT NULL,
     "channel" varchar(50) NOT NULL,

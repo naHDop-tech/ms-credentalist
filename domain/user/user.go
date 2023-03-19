@@ -14,6 +14,7 @@ var (
 	beginTxError        = errors.New("begin transaction failed")
 	createUserError     = errors.New("create user failed")
 	createCustomerError = errors.New("create customer failed")
+	customerNotFound    = errors.New("customer not found")
 )
 
 type UserDomain struct {
@@ -61,4 +62,13 @@ func (u *UserDomain) CreateUser(ctx context.Context, dto CreateUserDto) (*uuid.U
 
 	tx.Commit()
 	return &customerId, nil
+}
+
+func (u UserDomain) GetCustomerByName(ctx context.Context, name string) (*db.Customer, error) {
+	customer, err := u.repository.GetCustomerByUserName(ctx, name)
+	if err != nil {
+		return nil, customerNotFound
+	}
+
+	return &customer, nil
 }

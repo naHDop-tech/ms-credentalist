@@ -4,14 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/google/uuid"
 	db "github.com/naHDop-tech/ms-credentalist/db/sqlc"
 )
 
 var (
-	beginTxError           = errors.New("begin transaction failed")
-	createAuthRecordError  = errors.New("create customer failed")
+	createAuthRecordError  = errors.New("create auth record failed")
 	customerNotExistsError = errors.New("customer not exists")
 )
 
@@ -42,6 +42,7 @@ func (d OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error 
 		CustomerID: customerId,
 	})
 	if err != nil {
+		fmt.Println("ERROR", err.Error())
 		return createAuthRecordError
 	}
 
