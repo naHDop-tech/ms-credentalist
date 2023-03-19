@@ -10,9 +10,9 @@ func (s *Server) SetupRouter() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"POST", "PATCH", "GET"},
-		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "Referer", "User-Agent"},
+		AllowOrigins:     s.config.AllowedOrigin,
+		AllowMethods:     s.config.AllowedMethods,
+		AllowHeaders:     s.config.AllowedHeaders,
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))

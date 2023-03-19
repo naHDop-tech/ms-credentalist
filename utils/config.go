@@ -17,6 +17,9 @@ type Config struct {
 	AppPort             string        `mapstructure:"PORT"`
 	TokenSymmetricKey   string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
 	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	AllowedMethods      []string      `mapstructure:"ALLOWED_METHODS"`
+	AllowedHeaders      []string      `mapstructure:"ALLOWED_HEADERS"`
+	AllowedOrigin       []string      `mapstructure:"ALLOWED_ORIGIN"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
