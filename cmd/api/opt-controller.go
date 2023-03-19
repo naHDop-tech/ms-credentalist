@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	opt_auth "github.com/naHDop-tech/ms-credentalist/domain/opt-auth"
+	"github.com/naHDop-tech/ms-credentalist/domain/user"
 	"github.com/naHDop-tech/ms-credentalist/utils/responser"
 )
 
@@ -16,10 +16,17 @@ func (s *Server) sendOpt(ctx *gin.Context) {
 		return
 	}
 
-	err = s.optAuthDomain.SentOpt(ctx, opt_auth.CreateOptAuthRecord{
+	customerId, err := s.userDomain.CreateUser(ctx, user.CreateUserDto{
 		Email:    request.Email,
 		UserName: request.UserName,
 	})
+	if err != nil {
+		response = s.responser.New(nil, err, responser.FAIL)
+		ctx.JSON(response.Status, response)
+		return
+	}
+
+	err = s.optAuthDomain.SentOpt(ctx, *customerId)
 	if err != nil {
 		response = s.responser.New(nil, err, responser.FAIL)
 		ctx.JSON(response.Status, response)

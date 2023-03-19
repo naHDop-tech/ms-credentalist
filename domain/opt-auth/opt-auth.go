@@ -7,62 +7,33 @@ import (
 
 	"github.com/google/uuid"
 	db "github.com/naHDop-tech/ms-credentalist/db/sqlc"
-	"github.com/naHDop-tech/ms-credentalist/utils"
 )
 
 var (
-	beginTxError          = errors.New("begin transaction failed")
-	createUserError       = errors.New("create user failed")
-	createCustomerError   = errors.New("create customer failed")
-	createAuthRecordError = errors.New("create customer failed")
+	beginTxError           = errors.New("begin transaction failed")
+	createAuthRecordError  = errors.New("create customer failed")
+	customerNotExistsError = errors.New("customer not exists")
 )
 
 type OptAuthDomain struct {
 	repository *db.Queries
-	conn       *sql.DB
 }
 
 func NewOptAuthDomain(conn *sql.DB) *OptAuthDomain {
 	return &OptAuthDomain{
 		repository: db.New(conn),
-		conn:       conn,
 	}
 }
 
-func (d OptAuthDomain) SentOpt(ctx context.Context, payload CreateOptAuthRecord) error {
-	tx, err := d.conn.Begin()
-	if err != nil {
-		return beginTxError
-	}
-	defer tx.Rollback()
-	qtx := d.repository.WithTx(tx)
-
-	// TODO: check before create user
-
-	userId, err := qtx.CreateUser(ctx, db.CreateUserParams{
-		ID:       uuid.New(),
-		Email:    payload.Email,
-		UserName: payload.UserName,
-	})
-	if err != nil {
-		return createUserError
-	}
-
-	pwdHash, err := utils.HashAndSalt([]byte(payload.Email))
+func (d OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error {
+	customer, err := d.repository.GetCustomerById(ctx, customerId)
 	if err != nil {
 		return err
 	}
-	customerId, err := qtx.CreateCustomer(ctx, db.CreateCustomerParams{
-		ID:       uuid.New(),
-		Password: pwdHash,
-		UserName: payload.UserName,
-		UserID:   userId,
-	})
-	if err != nil {
-		return createCustomerError
+	if customer.ID == uuid.Nil {
+		return customerNotExistsError
 	}
-
-	_, err = qtx.CreateAuthRecord(ctx, db.CreateAuthRecordParams{
+	_, err = d.repository.CreateAuthRecord(ctx, db.CreateAuthRecordParams{
 		ID:         uuid.New(),
 		IsVerified: false,
 		// TODO: get opt from service
@@ -74,5 +45,5 @@ func (d OptAuthDomain) SentOpt(ctx context.Context, payload CreateOptAuthRecord)
 		return createAuthRecordError
 	}
 
-	return tx.Commit()
+	return nil
 }
