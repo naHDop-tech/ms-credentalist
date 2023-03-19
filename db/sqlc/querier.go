@@ -23,6 +23,7 @@ type Querier interface {
 	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) error
 	UpdateShowStrategy(ctx context.Context, arg UpdateShowStrategyParams) error
 	UpdateUserName(ctx context.Context, arg UpdateUserNameParams) error
+	UserCredentials(ctx context.Context, customerID uuid.UUID) ([]UserCredentialsRow, error)
 }
 
 var _ Querier = (*Queries)(nil)
