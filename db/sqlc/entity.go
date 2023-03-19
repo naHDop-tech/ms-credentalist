@@ -31,6 +31,15 @@ type Customer struct {
 	UpdatedAt sql.NullTime `json:"updated_at"`
 }
 
+type CustomerAuth struct {
+	ID         uuid.UUID `json:"id"`
+	CustomerID uuid.UUID `json:"customer_id"`
+	IsVerified bool      `json:"is_verified"`
+	Opt        string    `json:"opt"`
+	Channel    string    `json:"channel"`
+	CreatedAt  time.Time `json:"created_at"`
+}
+
 type ShowStrategy struct {
 	ID              uuid.UUID    `json:"id"`
 	ShowImmediately bool         `json:"show_immediately"`

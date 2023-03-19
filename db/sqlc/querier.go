@@ -12,12 +12,16 @@ import (
 
 type Querier interface {
 	AddCredential(ctx context.Context, arg AddCredentialParams) (uuid.UUID, error)
+	CreateAuthSettings(ctx context.Context, arg CreateAuthSettingsParams) (uuid.UUID, error)
 	CreateCustomer(ctx context.Context, arg CreateCustomerParams) (uuid.UUID, error)
 	CreateShowStrategy(ctx context.Context, arg CreateShowStrategyParams) (uuid.UUID, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UUID, error)
+	GetAuthSettingsByCustomerId(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error)
+	GetAuthSettingsHistory(ctx context.Context, customerID uuid.UUID) ([]CustomerAuth, error)
 	GetCredentialsByCustomerId(ctx context.Context, customerID uuid.UUID) ([]Credential, error)
 	GetCustomerById(ctx context.Context, id uuid.UUID) (Customer, error)
 	GetCustomerByUserName(ctx context.Context, userName string) (Customer, error)
+	GetLastNotVerifiedRecord(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error)
 	GetShowStrategy(ctx context.Context, credentialID uuid.UUID) (ShowStrategy, error)
 	UpdateCredential(ctx context.Context, arg UpdateCredentialParams) error
 	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) error
