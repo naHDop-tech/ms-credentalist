@@ -19,6 +19,7 @@ func (s *Server) SetupRouter() {
 
 	v1 := router.Group("/api/v1")
 
+	v1.POST("/send-opt", s.sendOpt)
 	v1.POST("/user")
 	v1.POST("/login")
 

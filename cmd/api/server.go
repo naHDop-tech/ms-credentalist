@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/naHDop-tech/ms-credentalist/utils"
+	"github.com/naHDop-tech/ms-credentalist/utils/responser"
 	"github.com/naHDop-tech/ms-credentalist/utils/token"
 )
 
@@ -14,6 +15,7 @@ type Server struct {
 	tokenMaker token.Maker
 	connect    *sql.DB
 	config     utils.Config
+	responser  responser.Responser
 }
 
 func NewServer(
@@ -28,6 +30,7 @@ func NewServer(
 		tokenMaker: tokenMaker,
 		connect:    connect,
 		config:     config,
+		responser:  responser.NewResponser(),
 	}
 
 	server.SetupRouter()
