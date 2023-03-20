@@ -8,20 +8,28 @@ import (
 
 	"github.com/google/uuid"
 	db "github.com/naHDop-tech/ms-credentalist/db/sqlc"
+	email_sender "github.com/naHDop-tech/ms-credentalist/service/email-sender"
+	"github.com/naHDop-tech/ms-credentalist/utils"
+	"github.com/naHDop-tech/ms-credentalist/utils/opt"
 )
 
 var (
 	createAuthRecordError  = errors.New("create auth record failed")
 	customerNotExistsError = errors.New("customer not exists")
+	generateOptCodeError   = errors.New("opt code generator failed")
+	sendOptCodeError       = errors.New("sending opt code was failed")
 )
 
 type OptAuthDomain struct {
 	repository *db.Queries
+	sender     email_sender.Sender
 }
 
-func NewOptAuthDomain(conn *sql.DB) *OptAuthDomain {
+func NewOptAuthDomain(conn *sql.DB, confg utils.Config) *OptAuthDomain {
+	sender := email_sender.NewSmtpSender(confg)
 	return &OptAuthDomain{
 		repository: db.New(conn),
+		sender:     sender,
 	}
 }
 
@@ -33,16 +41,35 @@ func (d OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error 
 	if customer.ID == uuid.Nil {
 		return customerNotExistsError
 	}
+
+	optCode, err := opt.GenerateOTP(6)
+	if err != nil {
+		fmt.Println("ERR", err.Error())
+		return generateOptCodeError
+	}
+
+	textBody, err := email_sender.GetOptBodyMessage(optCode, "Verify yourself")
+	if err != nil {
+		fmt.Println("ERR", err.Error())
+		return generateOptCodeError
+	}
+
+	to := []string{"tarasov198726@gmail.com"}
+	from := "tech.engineer.jedi@gmail.com"
+	err = d.sender.Sent(from, to, textBody)
+	if err != nil {
+		fmt.Println("ERR", err.Error())
+		return sendOptCodeError
+	}
+
 	_, err = d.repository.CreateAuthRecord(ctx, db.CreateAuthRecordParams{
 		ID:         uuid.New(),
 		IsVerified: false,
-		// TODO: get opt from service
-		Opt:        "735162",
+		Opt:        optCode,
 		Channel:    "email",
 		CustomerID: customerId,
 	})
 	if err != nil {
-		fmt.Println("ERROR", err.Error())
 		return createAuthRecordError
 	}
 

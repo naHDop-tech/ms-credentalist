@@ -39,7 +39,7 @@ func main() {
 	}
 
 	serverAddress := fmt.Sprintf("%s:%s", conf.AppHost, conf.AppPort)
-	optDomain := opt_auth.NewOptAuthDomain(conn)
+	optDomain := opt_auth.NewOptAuthDomain(conn, conf)
 	userDomain := user.NewUserDomain(conn)
 
 	server, err := api.NewServer(conn, conf, optDomain, userDomain)

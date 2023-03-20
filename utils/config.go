@@ -20,6 +20,10 @@ type Config struct {
 	AllowedMethods      []string      `mapstructure:"ALLOWED_METHODS"`
 	AllowedHeaders      []string      `mapstructure:"ALLOWED_HEADERS"`
 	AllowedOrigin       []string      `mapstructure:"ALLOWED_ORIGIN"`
+	SmtpHost            string        `mapstructure:"SMTP_HOST"`
+	SmtpPort            string        `mapstructure:"SMTP_PORT"`
+	SmtpPassword        string        `mapstructure:"SMTP_PASSWORD"`
+	SmtpLogin           string        `mapstructure:"SMTP_LOGIN"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
