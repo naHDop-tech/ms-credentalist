@@ -39,7 +39,7 @@ func (q *Queries) CreateAuthRecord(ctx context.Context, arg CreateAuthRecordPara
 
 const getAuthRecordByCustomerId = `-- name: GetAuthRecordByCustomerId :one
 SELECT id, customer_id, is_verified, opt, channel, created_at FROM customer_auth
-WHERE customer_id = $1 ORDER BY created_at ASC LIMIT 1
+WHERE customer_id = $1 ORDER BY created_at DESC LIMIT 1
 `
 
 func (q *Queries) GetAuthRecordByCustomerId(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error) {
@@ -58,7 +58,7 @@ func (q *Queries) GetAuthRecordByCustomerId(ctx context.Context, customerID uuid
 
 const getAuthRecordHistory = `-- name: GetAuthRecordHistory :many
 SELECT id, customer_id, is_verified, opt, channel, created_at FROM customer_auth
-WHERE customer_id = $1 ORDER BY created_at ASC
+WHERE customer_id = $1 ORDER BY created_at DESC
 `
 
 func (q *Queries) GetAuthRecordHistory(ctx context.Context, customerID uuid.UUID) ([]CustomerAuth, error) {
@@ -93,7 +93,7 @@ func (q *Queries) GetAuthRecordHistory(ctx context.Context, customerID uuid.UUID
 
 const getLastRecord = `-- name: GetLastRecord :one
 SELECT id, customer_id, is_verified, opt, channel, created_at FROM customer_auth
-WHERE customer_id = $1 ORDER BY created_at ASC LIMIT 1
+WHERE customer_id = $1 ORDER BY created_at DESC LIMIT 1
 `
 
 func (q *Queries) GetLastRecord(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error) {

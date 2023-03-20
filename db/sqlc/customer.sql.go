@@ -74,6 +74,42 @@ func (q *Queries) GetCustomerByUserName(ctx context.Context, userName string) (C
 	return i, err
 }
 
+const getUserByCustomerName = `-- name: GetUserByCustomerName :one
+SELECT
+    u.email,
+    c.id,
+    c.user_name,
+    c.user_id,
+    c.created_at,
+    c.updated_at
+FROM users u
+LEFT JOIN customers c ON c.user_id = u.id
+WHERE c.id = $1 LIMIT 1
+`
+
+type GetUserByCustomerNameRow struct {
+	Email     string         `json:"email"`
+	ID        uuid.NullUUID  `json:"id"`
+	UserName  sql.NullString `json:"user_name"`
+	UserID    uuid.NullUUID  `json:"user_id"`
+	CreatedAt sql.NullTime   `json:"created_at"`
+	UpdatedAt sql.NullTime   `json:"updated_at"`
+}
+
+func (q *Queries) GetUserByCustomerName(ctx context.Context, id uuid.UUID) (GetUserByCustomerNameRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserByCustomerName, id)
+	var i GetUserByCustomerNameRow
+	err := row.Scan(
+		&i.Email,
+		&i.ID,
+		&i.UserName,
+		&i.UserID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const updatePassword = `-- name: UpdatePassword :exec
 UPDATE customers
 SET password = $1, updated_at = $2

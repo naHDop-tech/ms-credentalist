@@ -34,11 +34,11 @@ func NewOptAuthDomain(conn *sql.DB, confg utils.Config) *OptAuthDomain {
 }
 
 func (d OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error {
-	customer, err := d.repository.GetCustomerById(ctx, customerId)
+	customer, err := d.repository.GetUserByCustomerName(ctx, customerId)
 	if err != nil {
 		return err
 	}
-	if customer.ID == uuid.Nil {
+	if customer.ID.UUID == uuid.Nil {
 		return customerNotExistsError
 	}
 
@@ -54,7 +54,7 @@ func (d OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error 
 		return generateOptCodeError
 	}
 
-	to := []string{"tarasov198726@gmail.com"}
+	to := []string{customer.Email}
 	from := "tech.engineer.jedi@gmail.com"
 	err = d.sender.Sent(from, to, textBody)
 	if err != nil {
