@@ -12,14 +12,14 @@ import (
 )
 
 const createAuthRecord = `-- name: CreateAuthRecord :one
-INSERT INTO customer_auth ("id", "is_verified", "opt", "channel", "customer_id")
+INSERT INTO customer_auth ("id", "is_verified", "otp", "channel", "customer_id")
 VALUES ($1, $2, $3, $4, $5) RETURNING "id"
 `
 
 type CreateAuthRecordParams struct {
 	ID         uuid.UUID `json:"id"`
 	IsVerified bool      `json:"is_verified"`
-	Opt        string    `json:"opt"`
+	Otp        string    `json:"otp"`
 	Channel    string    `json:"channel"`
 	CustomerID uuid.UUID `json:"customer_id"`
 }
@@ -28,7 +28,7 @@ func (q *Queries) CreateAuthRecord(ctx context.Context, arg CreateAuthRecordPara
 	row := q.db.QueryRowContext(ctx, createAuthRecord,
 		arg.ID,
 		arg.IsVerified,
-		arg.Opt,
+		arg.Otp,
 		arg.Channel,
 		arg.CustomerID,
 	)
@@ -38,7 +38,7 @@ func (q *Queries) CreateAuthRecord(ctx context.Context, arg CreateAuthRecordPara
 }
 
 const getAuthRecordByCustomerId = `-- name: GetAuthRecordByCustomerId :one
-SELECT id, customer_id, is_verified, opt, channel, created_at FROM customer_auth
+SELECT id, customer_id, is_verified, otp, channel, created_at FROM customer_auth
 WHERE customer_id = $1 ORDER BY created_at DESC LIMIT 1
 `
 
@@ -49,7 +49,7 @@ func (q *Queries) GetAuthRecordByCustomerId(ctx context.Context, customerID uuid
 		&i.ID,
 		&i.CustomerID,
 		&i.IsVerified,
-		&i.Opt,
+		&i.Otp,
 		&i.Channel,
 		&i.CreatedAt,
 	)
@@ -57,7 +57,7 @@ func (q *Queries) GetAuthRecordByCustomerId(ctx context.Context, customerID uuid
 }
 
 const getAuthRecordHistory = `-- name: GetAuthRecordHistory :many
-SELECT id, customer_id, is_verified, opt, channel, created_at FROM customer_auth
+SELECT id, customer_id, is_verified, otp, channel, created_at FROM customer_auth
 WHERE customer_id = $1 ORDER BY created_at DESC
 `
 
@@ -74,7 +74,7 @@ func (q *Queries) GetAuthRecordHistory(ctx context.Context, customerID uuid.UUID
 			&i.ID,
 			&i.CustomerID,
 			&i.IsVerified,
-			&i.Opt,
+			&i.Otp,
 			&i.Channel,
 			&i.CreatedAt,
 		); err != nil {
@@ -92,7 +92,7 @@ func (q *Queries) GetAuthRecordHistory(ctx context.Context, customerID uuid.UUID
 }
 
 const getLastRecord = `-- name: GetLastRecord :one
-SELECT id, customer_id, is_verified, opt, channel, created_at FROM customer_auth
+SELECT id, customer_id, is_verified, otp, channel, created_at FROM customer_auth
 WHERE customer_id = $1 ORDER BY created_at DESC LIMIT 1
 `
 
@@ -103,9 +103,19 @@ func (q *Queries) GetLastRecord(ctx context.Context, customerID uuid.UUID) (Cust
 		&i.ID,
 		&i.CustomerID,
 		&i.IsVerified,
-		&i.Opt,
+		&i.Otp,
 		&i.Channel,
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const verifyCustomerOpt = `-- name: VerifyCustomerOpt :exec
+UPDATE customer_auth
+SET is_verified = $1
+`
+
+func (q *Queries) VerifyCustomerOpt(ctx context.Context, isVerified bool) error {
+	_, err := q.db.ExecContext(ctx, verifyCustomerOpt, isVerified)
+	return err
 }

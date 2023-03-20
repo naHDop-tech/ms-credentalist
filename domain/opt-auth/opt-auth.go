@@ -33,7 +33,7 @@ func NewOptAuthDomain(conn *sql.DB, confg utils.Config) *OptAuthDomain {
 	}
 }
 
-func (d OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error {
+func (d *OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error {
 	customer, err := d.repository.GetUserByCustomerName(ctx, customerId)
 	if err != nil {
 		return err
@@ -42,13 +42,13 @@ func (d OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error 
 		return customerNotExistsError
 	}
 
-	optCode, err := opt.GenerateOTP(6)
+	otpCode, err := opt.GenerateOTP(6)
 	if err != nil {
 		fmt.Println("ERR", err.Error())
 		return generateOptCodeError
 	}
 
-	textBody, err := email_sender.GetOptBodyMessage(optCode, "Verify yourself")
+	textBody, err := email_sender.GetOtpBodyMessage(otpCode, "Verify yourself")
 	if err != nil {
 		fmt.Println("ERR", err.Error())
 		return generateOptCodeError
@@ -65,7 +65,7 @@ func (d OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error 
 	_, err = d.repository.CreateAuthRecord(ctx, db.CreateAuthRecordParams{
 		ID:         uuid.New(),
 		IsVerified: false,
-		Opt:        optCode,
+		Otp:        otpCode,
 		Channel:    "email",
 		CustomerID: customerId,
 	})
@@ -74,4 +74,8 @@ func (d OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error 
 	}
 
 	return nil
+}
+
+func (o *OptAuthDomain) VerifyCustomerOtpCode() {
+
 }

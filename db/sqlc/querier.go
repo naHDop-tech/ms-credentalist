@@ -29,6 +29,7 @@ type Querier interface {
 	UpdateShowStrategy(ctx context.Context, arg UpdateShowStrategyParams) error
 	UpdateUserName(ctx context.Context, arg UpdateUserNameParams) error
 	UserCredentials(ctx context.Context, customerID uuid.UUID) ([]UserCredentialsRow, error)
+	VerifyCustomerOpt(ctx context.Context, isVerified bool) error
 }
 
 var _ Querier = (*Queries)(nil)

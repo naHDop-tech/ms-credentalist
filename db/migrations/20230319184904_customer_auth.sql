@@ -4,7 +4,7 @@ CREATE TABLE "customer_auth" (
     "id" uuid PRIMARY KEY,
     "customer_id" uuid NOT NULL,
     "is_verified" boolean NOT NULL,
-    "opt" varchar(50) NOT NULL,
+    "otp" varchar(50) NOT NULL,
     "channel" varchar(50) NOT NULL,
     "created_at" timestamptz NOT NULL DEFAULT (now())
 );

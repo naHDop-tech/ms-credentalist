@@ -6,7 +6,7 @@ import (
 	"html/template"
 )
 
-func GetOptBodyMessage(optCode string, title string) ([]byte, error) {
+func GetOtpBodyMessage(otpCode string, title string) ([]byte, error) {
 	t, err := template.ParseFiles("template/email/opt.html")
 	if err != nil {
 		return nil, err
@@ -18,10 +18,10 @@ func GetOptBodyMessage(optCode string, title string) ([]byte, error) {
 
 	t.Execute(&body, struct {
 		Title string
-		Opt   string
+		Otp   string
 	}{
 		Title: title,
-		Opt:   optCode,
+		Otp:   otpCode,
 	})
 
 	return body.Bytes(), nil
