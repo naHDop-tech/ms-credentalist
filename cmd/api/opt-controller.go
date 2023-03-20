@@ -26,7 +26,7 @@ func (s *Server) sendOpt(ctx *gin.Context) {
 		return
 	}
 
-	err = s.optAuthDomain.SentOpt(ctx, *customerId)
+	err = s.optAuthDomain.SendOpt(ctx, *customerId)
 	if err != nil {
 		response = s.responser.New(nil, err, responser.FAIL)
 		ctx.JSON(response.Status, response)
@@ -55,7 +55,7 @@ func (s *Server) resendOpt(ctx *gin.Context) {
 		return
 	}
 
-	err = s.optAuthDomain.SentOpt(ctx, customer.ID)
+	err = s.optAuthDomain.SendOpt(ctx, customer.ID)
 	if err != nil {
 		response = s.responser.New(nil, err, responser.FAIL)
 		ctx.JSON(response.Status, response)

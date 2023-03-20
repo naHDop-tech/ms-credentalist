@@ -36,8 +36,8 @@ func NewOptAuthDomain(conn *sql.DB, confg utils.Config) *OptAuthDomain {
 	}
 }
 
-func (d *OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error {
-	customer, err := d.repository.GetUserByCustomerId(ctx, customerId)
+func (o *OptAuthDomain) SendOpt(ctx context.Context, customerId uuid.UUID) error {
+	customer, err := o.repository.GetUserByCustomerId(ctx, customerId)
 	if err != nil {
 		return err
 	}
@@ -59,13 +59,13 @@ func (d *OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error
 
 	to := []string{customer.Email}
 	from := "tech.engineer.jedi@gmail.com"
-	err = d.sender.Sent(from, to, textBody)
+	err = o.sender.Sent(from, to, textBody)
 	if err != nil {
 		fmt.Println("ERR", err.Error())
 		return sendOptCodeError
 	}
 
-	_, err = d.repository.CreateAuthRecord(ctx, db.CreateAuthRecordParams{
+	_, err = o.repository.CreateAuthRecord(ctx, db.CreateAuthRecordParams{
 		ID:         uuid.New(),
 		IsVerified: false,
 		Otp:        otpCode,
