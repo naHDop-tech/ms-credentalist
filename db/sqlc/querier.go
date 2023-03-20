@@ -23,13 +23,13 @@ type Querier interface {
 	GetCustomerByUserName(ctx context.Context, userName string) (Customer, error)
 	GetLastRecord(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error)
 	GetShowStrategy(ctx context.Context, credentialID uuid.UUID) (ShowStrategy, error)
-	GetUserByCustomerName(ctx context.Context, id uuid.UUID) (GetUserByCustomerNameRow, error)
+	GetUserByCustomerId(ctx context.Context, id uuid.UUID) (GetUserByCustomerIdRow, error)
 	UpdateCredential(ctx context.Context, arg UpdateCredentialParams) error
 	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) error
 	UpdateShowStrategy(ctx context.Context, arg UpdateShowStrategyParams) error
 	UpdateUserName(ctx context.Context, arg UpdateUserNameParams) error
 	UserCredentials(ctx context.Context, customerID uuid.UUID) ([]UserCredentialsRow, error)
-	VerifyCustomerOpt(ctx context.Context, isVerified bool) error
+	VerifyCustomerOpt(ctx context.Context, arg VerifyCustomerOptParams) error
 }
 
 var _ Querier = (*Queries)(nil)

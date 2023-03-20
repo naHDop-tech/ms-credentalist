@@ -14,10 +14,13 @@ import (
 )
 
 var (
-	createAuthRecordError  = errors.New("create auth record failed")
-	customerNotExistsError = errors.New("customer not exists")
-	generateOptCodeError   = errors.New("opt code generator failed")
-	sendOptCodeError       = errors.New("sending opt code was failed")
+	createAuthRecordError      = errors.New("create auth record failed")
+	customerNotExistsError     = errors.New("customer not exists")
+	recordNotExistsError       = errors.New("record not exists")
+	recordAlreadyVerifiedError = errors.New("record already verified")
+	notValidOtpError           = errors.New("otp code not valid")
+	generateOptCodeError       = errors.New("opt code generator failed")
+	sendOptCodeError           = errors.New("sending opt code was failed")
 )
 
 type OptAuthDomain struct {
@@ -34,7 +37,7 @@ func NewOptAuthDomain(conn *sql.DB, confg utils.Config) *OptAuthDomain {
 }
 
 func (d *OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error {
-	customer, err := d.repository.GetUserByCustomerName(ctx, customerId)
+	customer, err := d.repository.GetUserByCustomerId(ctx, customerId)
 	if err != nil {
 		return err
 	}
@@ -76,6 +79,27 @@ func (d *OptAuthDomain) SentOpt(ctx context.Context, customerId uuid.UUID) error
 	return nil
 }
 
-func (o *OptAuthDomain) VerifyCustomerOtpCode() {
+func (o *OptAuthDomain) VerifyCustomerOtpCode(ctx context.Context, dto VerifyCustomerOtpDto) error {
+	customer, err := o.repository.GetCustomerByUserName(ctx, dto.UserName)
+	if err != nil {
+		return customerNotExistsError
+	}
 
+	record, err := o.repository.GetLastRecord(ctx, customer.ID)
+	if err != nil {
+		return recordNotExistsError
+	}
+	if record.IsVerified {
+		return recordAlreadyVerifiedError
+	}
+	if record.Otp != dto.Otp {
+		return notValidOtpError
+	}
+
+	err = o.repository.VerifyCustomerOpt(ctx, db.VerifyCustomerOptParams{
+		IsVerified: true,
+		CustomerID: customer.ID,
+	})
+
+	return err
 }

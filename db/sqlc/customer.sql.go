@@ -74,7 +74,7 @@ func (q *Queries) GetCustomerByUserName(ctx context.Context, userName string) (C
 	return i, err
 }
 
-const getUserByCustomerName = `-- name: GetUserByCustomerName :one
+const getUserByCustomerId = `-- name: GetUserByCustomerId :one
 SELECT
     u.email,
     c.id,
@@ -87,7 +87,7 @@ LEFT JOIN customers c ON c.user_id = u.id
 WHERE c.id = $1 LIMIT 1
 `
 
-type GetUserByCustomerNameRow struct {
+type GetUserByCustomerIdRow struct {
 	Email     string         `json:"email"`
 	ID        uuid.NullUUID  `json:"id"`
 	UserName  sql.NullString `json:"user_name"`
@@ -96,9 +96,9 @@ type GetUserByCustomerNameRow struct {
 	UpdatedAt sql.NullTime   `json:"updated_at"`
 }
 
-func (q *Queries) GetUserByCustomerName(ctx context.Context, id uuid.UUID) (GetUserByCustomerNameRow, error) {
-	row := q.db.QueryRowContext(ctx, getUserByCustomerName, id)
-	var i GetUserByCustomerNameRow
+func (q *Queries) GetUserByCustomerId(ctx context.Context, id uuid.UUID) (GetUserByCustomerIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserByCustomerId, id)
+	var i GetUserByCustomerIdRow
 	err := row.Scan(
 		&i.Email,
 		&i.ID,

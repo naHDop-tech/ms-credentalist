@@ -112,10 +112,15 @@ func (q *Queries) GetLastRecord(ctx context.Context, customerID uuid.UUID) (Cust
 
 const verifyCustomerOpt = `-- name: VerifyCustomerOpt :exec
 UPDATE customer_auth
-SET is_verified = $1
+SET is_verified = $1 WHERE customer_id = $2
 `
 
-func (q *Queries) VerifyCustomerOpt(ctx context.Context, isVerified bool) error {
-	_, err := q.db.ExecContext(ctx, verifyCustomerOpt, isVerified)
+type VerifyCustomerOptParams struct {
+	IsVerified bool      `json:"is_verified"`
+	CustomerID uuid.UUID `json:"customer_id"`
+}
+
+func (q *Queries) VerifyCustomerOpt(ctx context.Context, arg VerifyCustomerOptParams) error {
+	_, err := q.db.ExecContext(ctx, verifyCustomerOpt, arg.IsVerified, arg.CustomerID)
 	return err
 }

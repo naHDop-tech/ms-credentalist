@@ -6,7 +6,7 @@ VALUES ($1, $2, $3, $4) RETURNING "id";
 SELECT * FROM customers
 WHERE user_name = $1 LIMIT 1;
 
--- name: GetUserByCustomerName :one
+-- name: GetUserByCustomerId :one
 SELECT
     u.email,
     c.id,

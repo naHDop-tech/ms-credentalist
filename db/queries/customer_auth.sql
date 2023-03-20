@@ -4,7 +4,7 @@ VALUES ($1, $2, $3, $4, $5) RETURNING "id";
 
 -- name: VerifyCustomerOpt :exec
 UPDATE customer_auth
-SET is_verified = $1;
+SET is_verified = $1 WHERE customer_id = $2;
 
 -- name: GetAuthRecordByCustomerId :one
 SELECT * FROM customer_auth
