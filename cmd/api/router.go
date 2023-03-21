@@ -19,9 +19,9 @@ func (s *Server) SetupRouter() {
 
 	v1 := router.Group("/api/v1")
 
-	v1.POST("/send-opt", s.sendOpt)
-	v1.POST("/re-send-opt", s.resendOpt)
-	v1.POST("/user")
+	v1.POST("/otp/send", s.sendOtp)
+	v1.POST("/otp/re-send", s.resendOtp)
+	v1.POST("/otp/verify", s.verifyOtp)
 	v1.POST("/login")
 
 	v1AuthGroupRoute := v1.Group("/").Use(middleware.AuthMiddleware(s.tokenMaker))

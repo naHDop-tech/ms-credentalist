@@ -5,6 +5,15 @@ type verifyEmailRequest struct {
 	UserName string `json:"user_name" binding:"required,min=5,max=30"`
 }
 
+type verifyOtp struct {
+	Otp      string `json:"otp" binding:"required,min=6,max=6"`
+	UserName string `json:"user_name" binding:"required,min=5,max=30"`
+}
+
 type okResponse struct {
 	Status string `json:"status"`
+}
+
+type tokenResponse struct {
+	Token string `json:"token"`
 }

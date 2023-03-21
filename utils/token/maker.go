@@ -1,9 +1,12 @@
 package token
 
-import "time"
+import (
+	"time"
+)
 
 type UserPayload struct {
-	UserId string
+	CustomerId string
+	UserName   string
 }
 
 type Maker interface {

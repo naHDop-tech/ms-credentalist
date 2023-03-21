@@ -13,10 +13,11 @@ var (
 )
 
 type Payload struct {
-	ID        uuid.UUID `json:"id"`
-	UserId    string    `json:"user_id"`
-	IssuedAt  time.Time `json:"issued_at"`
-	ExpiredAt time.Time `json:"expired_at"`
+	ID         uuid.UUID `json:"id"`
+	CustomerId string    `json:"user_id"`
+	UserName   string    `json:"user_name"`
+	IssuedAt   time.Time `json:"issued_at"`
+	ExpiredAt  time.Time `json:"expired_at"`
 }
 
 func CreatePayload(userPayload UserPayload, duration time.Duration) (*Payload, error) {
@@ -26,10 +27,11 @@ func CreatePayload(userPayload UserPayload, duration time.Duration) (*Payload, e
 	}
 
 	payload := &Payload{
-		ID:        tokenId,
-		UserId:    userPayload.UserId,
-		IssuedAt:  time.Now(),
-		ExpiredAt: time.Now().Add(duration),
+		ID:         tokenId,
+		CustomerId: userPayload.CustomerId,
+		UserName:   userPayload.UserName,
+		IssuedAt:   time.Now(),
+		ExpiredAt:  time.Now().Add(duration),
 	}
 
 	return payload, nil

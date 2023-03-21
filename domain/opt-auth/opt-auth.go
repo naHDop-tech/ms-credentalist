@@ -19,7 +19,7 @@ var (
 	recordNotExistsError       = errors.New("record not exists")
 	recordAlreadyVerifiedError = errors.New("record already verified")
 	notValidOtpError           = errors.New("otp code not valid")
-	generateOptCodeError       = errors.New("opt code generator failed")
+	generateOptCodeError       = errors.New("otp code generator failed")
 	sendOptCodeError           = errors.New("sending opt code was failed")
 )
 
