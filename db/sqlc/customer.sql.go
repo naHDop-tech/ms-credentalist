@@ -8,6 +8,7 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -83,17 +84,17 @@ SELECT
     c.created_at,
     c.updated_at
 FROM users u
-LEFT JOIN customers c ON c.user_id = u.id
+JOIN customers c ON c.user_id = u.id
 WHERE c.id = $1 LIMIT 1
 `
 
 type GetUserByCustomerIdRow struct {
-	Email     string         `json:"email"`
-	ID        uuid.NullUUID  `json:"id"`
-	UserName  sql.NullString `json:"user_name"`
-	UserID    uuid.NullUUID  `json:"user_id"`
-	CreatedAt sql.NullTime   `json:"created_at"`
-	UpdatedAt sql.NullTime   `json:"updated_at"`
+	Email     string       `json:"email"`
+	ID        uuid.UUID    `json:"id"`
+	UserName  string       `json:"user_name"`
+	UserID    uuid.UUID    `json:"user_id"`
+	CreatedAt time.Time    `json:"created_at"`
+	UpdatedAt sql.NullTime `json:"updated_at"`
 }
 
 func (q *Queries) GetUserByCustomerId(ctx context.Context, id uuid.UUID) (GetUserByCustomerIdRow, error) {

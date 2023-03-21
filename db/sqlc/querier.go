@@ -21,6 +21,7 @@ type Querier interface {
 	GetCredentialsByCustomerId(ctx context.Context, customerID uuid.UUID) ([]Credential, error)
 	GetCustomerById(ctx context.Context, id uuid.UUID) (Customer, error)
 	GetCustomerByUserName(ctx context.Context, userName string) (Customer, error)
+	GetFullCredentialsByCustomerId(ctx context.Context, customerID uuid.UUID) ([]GetFullCredentialsByCustomerIdRow, error)
 	GetLastRecord(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error)
 	GetShowStrategy(ctx context.Context, credentialID uuid.UUID) (ShowStrategy, error)
 	GetUserByCustomerId(ctx context.Context, id uuid.UUID) (GetUserByCustomerIdRow, error)

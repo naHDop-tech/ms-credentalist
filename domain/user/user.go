@@ -72,3 +72,12 @@ func (u UserDomain) GetCustomerByName(ctx context.Context, name string) (*db.Cus
 
 	return &customer, nil
 }
+
+func (u UserDomain) GetCustomerById(ctx context.Context, id uuid.UUID) (*db.Customer, error) {
+	customer, err := u.repository.GetCustomerById(ctx, id)
+	if err != nil {
+		return nil, customerNotFound
+	}
+
+	return &customer, nil
+}

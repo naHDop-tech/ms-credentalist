@@ -22,11 +22,10 @@ func (s *Server) SetupRouter() {
 	v1.POST("/otp/send", s.sendOtp)
 	v1.POST("/otp/re-send", s.resendOtp)
 	v1.POST("/otp/verify", s.verifyOtp)
-	v1.POST("/login")
 
-	v1AuthGroupRoute := v1.Group("/").Use(middleware.AuthMiddleware(s.tokenMaker))
+	v1A := v1.Group("/").Use(middleware.AuthMiddleware(s.tokenMaker))
 	{
-		v1AuthGroupRoute.GET("/user/:user_id")
+		v1A.GET("/customer/:customer_id", s.customerById)
 	}
 
 	s.router = router

@@ -6,7 +6,7 @@ CREATE TABLE "credentials" (
     "login_name" varchar(255) NOT NULL,
     "secret" varchar(500) NOT NULL,
     "description" varchar(255) NOT NULL,
-    "customer_id" uuid UNIQUE NOT NULL,
+    "customer_id" uuid NOT NULL,
     "created_at" timestamptz NOT NULL DEFAULT (now()),
     "updated_at" timestamptz
 );

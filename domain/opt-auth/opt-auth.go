@@ -43,7 +43,7 @@ func (o *OptAuthDomain) SendOpt(ctx context.Context, customerId uuid.UUID) error
 	if err != nil {
 		return err
 	}
-	if customer.ID.UUID == uuid.Nil {
+	if customer.ID == uuid.Nil {
 		return customerNotExistsError
 	}
 

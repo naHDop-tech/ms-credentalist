@@ -15,7 +15,7 @@ SELECT
     c.created_at,
     c.updated_at
 FROM users u
-LEFT JOIN customers c ON c.user_id = u.id
+JOIN customers c ON c.user_id = u.id
 WHERE c.id = $1 LIMIT 1;
 
 -- name: GetCustomerById :one

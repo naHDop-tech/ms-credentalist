@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
+	"path/filepath"
 )
 
 func GetOtpBodyMessage(otpCode string, title string) ([]byte, error) {
-	t, err := template.ParseFiles("template/email/opt.html")
+	filePath := filepath.Join("template", "email", "opt.html")
+	t, err := template.ParseFiles(filePath)
 	if err != nil {
 		return nil, err
 	}
