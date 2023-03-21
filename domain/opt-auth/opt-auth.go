@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 	db "github.com/naHDop-tech/ms-credentalist/db/sqlc"
@@ -21,6 +22,7 @@ var (
 	notValidOtpError           = errors.New("otp code not valid")
 	generateOptCodeError       = errors.New("otp code generator failed")
 	sendOptCodeError           = errors.New("sending opt code was failed")
+	otpCodeExpired             = errors.New("otp code has expired")
 )
 
 type OptAuthDomain struct {
@@ -88,6 +90,12 @@ func (o *OptAuthDomain) VerifyCustomerOtpCode(ctx context.Context, dto VerifyCus
 	record, err := o.repository.GetLastRecord(ctx, customer.ID)
 	if err != nil {
 		return recordNotExistsError
+	}
+
+	timeNow := time.Now()
+	upToFifteenMinutesFromCreatedAt := record.CreatedAt.Add(15 * time.Minute)
+	if timeNow.After(upToFifteenMinutesFromCreatedAt) {
+		return otpCodeExpired
 	}
 	if record.IsVerified {
 		return recordAlreadyVerifiedError

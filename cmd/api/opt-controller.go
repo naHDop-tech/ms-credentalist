@@ -71,7 +71,7 @@ func (s *Server) resendOtp(ctx *gin.Context) {
 
 func (s *Server) verifyOtp(ctx *gin.Context) {
 	var response responser.Response
-	var request verifyOtp
+	var request verifyOtpRequest
 	err := ctx.ShouldBindJSON(&request)
 	if err != nil {
 		response = s.responser.New(nil, err, responser.BAD_REQUEST)
