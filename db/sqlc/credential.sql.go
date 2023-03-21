@@ -40,6 +40,27 @@ func (q *Queries) AddCredential(ctx context.Context, arg AddCredentialParams) (u
 	return id, err
 }
 
+const getCredential = `-- name: GetCredential :one
+SELECT id, title, login_name, secret, description, customer_id, created_at, updated_at FROM credentials
+WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetCredential(ctx context.Context, id uuid.UUID) (Credential, error) {
+	row := q.db.QueryRowContext(ctx, getCredential, id)
+	var i Credential
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.LoginName,
+		&i.Secret,
+		&i.Description,
+		&i.CustomerID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getCredentialsByCustomerId = `-- name: GetCredentialsByCustomerId :many
 SELECT id, title, login_name, secret, description, customer_id, created_at, updated_at FROM credentials
 WHERE customer_id = $1
@@ -63,67 +84,6 @@ func (q *Queries) GetCredentialsByCustomerId(ctx context.Context, customerID uui
 			&i.CustomerID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getFullCredentialsByCustomerId = `-- name: GetFullCredentialsByCustomerId :many
-SELECT
-    c.id,
-    c.title,
-    c.login_name,
-    c.secret,
-    c.description,
-    c.customer_id,
-    ss.show_immediately,
-    ss.send_to_email,
-    ss.send_to_phone
-FROM credentials c
-JOIN show_strategies ss ON ss.credential_id = c.id
-WHERE c.customer_id = $1
-`
-
-type GetFullCredentialsByCustomerIdRow struct {
-	ID              uuid.UUID `json:"id"`
-	Title           string    `json:"title"`
-	LoginName       string    `json:"login_name"`
-	Secret          string    `json:"secret"`
-	Description     string    `json:"description"`
-	CustomerID      uuid.UUID `json:"customer_id"`
-	ShowImmediately bool      `json:"show_immediately"`
-	SendToEmail     bool      `json:"send_to_email"`
-	SendToPhone     bool      `json:"send_to_phone"`
-}
-
-func (q *Queries) GetFullCredentialsByCustomerId(ctx context.Context, customerID uuid.UUID) ([]GetFullCredentialsByCustomerIdRow, error) {
-	rows, err := q.db.QueryContext(ctx, getFullCredentialsByCustomerId, customerID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []GetFullCredentialsByCustomerIdRow{}
-	for rows.Next() {
-		var i GetFullCredentialsByCustomerIdRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Title,
-			&i.LoginName,
-			&i.Secret,
-			&i.Description,
-			&i.CustomerID,
-			&i.ShowImmediately,
-			&i.SendToEmail,
-			&i.SendToPhone,
 		); err != nil {
 			return nil, err
 		}

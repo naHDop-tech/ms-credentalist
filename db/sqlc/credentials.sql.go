@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-const userCredentials = `-- name: UserCredentials :many
+const customerCredentials = `-- name: CustomerCredentials :many
 SELECT
     c.id as "credential_id",
     c.title as "title",
@@ -26,7 +26,7 @@ JOIN show_strategies ss ON ss.credential_id = c.id
 WHERE c.customer_id = $1
 `
 
-type UserCredentialsRow struct {
+type CustomerCredentialsRow struct {
 	CredentialID    uuid.UUID `json:"credential_id"`
 	Title           string    `json:"title"`
 	LoginName       string    `json:"login_name"`
@@ -37,15 +37,15 @@ type UserCredentialsRow struct {
 	SendToPhone     bool      `json:"send_to_phone"`
 }
 
-func (q *Queries) UserCredentials(ctx context.Context, customerID uuid.UUID) ([]UserCredentialsRow, error) {
-	rows, err := q.db.QueryContext(ctx, userCredentials, customerID)
+func (q *Queries) CustomerCredentials(ctx context.Context, customerID uuid.UUID) ([]CustomerCredentialsRow, error) {
+	rows, err := q.db.QueryContext(ctx, customerCredentials, customerID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []UserCredentialsRow{}
+	items := []CustomerCredentialsRow{}
 	for rows.Next() {
-		var i UserCredentialsRow
+		var i CustomerCredentialsRow
 		if err := rows.Scan(
 			&i.CredentialID,
 			&i.Title,

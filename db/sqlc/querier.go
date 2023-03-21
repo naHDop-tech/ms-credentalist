@@ -16,12 +16,13 @@ type Querier interface {
 	CreateCustomer(ctx context.Context, arg CreateCustomerParams) (uuid.UUID, error)
 	CreateShowStrategy(ctx context.Context, arg CreateShowStrategyParams) (uuid.UUID, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UUID, error)
+	CustomerCredentials(ctx context.Context, customerID uuid.UUID) ([]CustomerCredentialsRow, error)
 	GetAuthRecordByCustomerId(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error)
 	GetAuthRecordHistory(ctx context.Context, customerID uuid.UUID) ([]CustomerAuth, error)
+	GetCredential(ctx context.Context, id uuid.UUID) (Credential, error)
 	GetCredentialsByCustomerId(ctx context.Context, customerID uuid.UUID) ([]Credential, error)
 	GetCustomerById(ctx context.Context, id uuid.UUID) (Customer, error)
 	GetCustomerByUserName(ctx context.Context, userName string) (Customer, error)
-	GetFullCredentialsByCustomerId(ctx context.Context, customerID uuid.UUID) ([]GetFullCredentialsByCustomerIdRow, error)
 	GetLastRecord(ctx context.Context, customerID uuid.UUID) (CustomerAuth, error)
 	GetShowStrategy(ctx context.Context, credentialID uuid.UUID) (ShowStrategy, error)
 	GetUserByCustomerId(ctx context.Context, id uuid.UUID) (GetUserByCustomerIdRow, error)
@@ -29,7 +30,6 @@ type Querier interface {
 	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) error
 	UpdateShowStrategy(ctx context.Context, arg UpdateShowStrategyParams) error
 	UpdateUserName(ctx context.Context, arg UpdateUserNameParams) error
-	UserCredentials(ctx context.Context, customerID uuid.UUID) ([]UserCredentialsRow, error)
 	VerifyCustomerOpt(ctx context.Context, arg VerifyCustomerOptParams) error
 }
 

@@ -1,4 +1,4 @@
--- name: UserCredentials :many
+-- name: CustomerCredentials :many
 SELECT
     c.id as "credential_id",
     c.title as "title",
