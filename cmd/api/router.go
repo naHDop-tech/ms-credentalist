@@ -26,7 +26,7 @@ func (s *Server) SetupRouter() {
 	v1A := v1.Group("/").Use(middleware.AuthMiddleware(s.tokenMaker))
 	{
 		v1A.GET("/customer/:customer_id", s.customerById)
-		v1A.GET("/customer/:customer_id/credential")
+		v1A.GET("/customer/:customer_id/credentials", s.credentialsByCustomerId)
 
 		v1A.POST("/customer/:customer_id/credential")
 

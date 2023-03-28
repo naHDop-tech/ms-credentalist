@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/naHDop-tech/ms-credentalist/domain/credentials"
 	opt_auth "github.com/naHDop-tech/ms-credentalist/domain/opt-auth"
 	"github.com/naHDop-tech/ms-credentalist/domain/user"
 	"github.com/naHDop-tech/ms-credentalist/utils"
@@ -19,8 +20,9 @@ type Server struct {
 	config     utils.Config
 	responser  responser.Responser
 
-	optAuthDomain *opt_auth.OptAuthDomain
-	userDomain    *user.UserDomain
+	optAuthDomain     *opt_auth.OptAuthDomain
+	userDomain        *user.UserDomain
+	credentialsDomain *credentials.CredentialsDomain
 }
 
 func NewServer(
@@ -28,18 +30,20 @@ func NewServer(
 	config utils.Config,
 	optAuthDomain *opt_auth.OptAuthDomain,
 	userDomain *user.UserDomain,
+	credentialsDomain *credentials.CredentialsDomain,
 ) (*Server, error) {
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker %s", err)
 	}
 	server := &Server{
-		tokenMaker:    tokenMaker,
-		connect:       connect,
-		config:        config,
-		responser:     responser.NewResponser(),
-		optAuthDomain: optAuthDomain,
-		userDomain:    userDomain,
+		tokenMaker:        tokenMaker,
+		connect:           connect,
+		config:            config,
+		responser:         responser.NewResponser(),
+		optAuthDomain:     optAuthDomain,
+		userDomain:        userDomain,
+		credentialsDomain: credentialsDomain,
 	}
 
 	server.SetupRouter()
