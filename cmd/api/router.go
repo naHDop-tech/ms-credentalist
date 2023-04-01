@@ -30,7 +30,7 @@ func (s *Server) SetupRouter() {
 
 		v1A.POST("/customer/:customer_id/credentials", s.createCredential)
 
-		v1A.PATCH("/customer/:customer_id/credentials/:credential_id")
+		v1A.PATCH("/customer/:customer_id/credentials/:credential_id", s.updateCredential)
 	}
 
 	s.router = router

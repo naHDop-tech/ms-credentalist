@@ -13,7 +13,7 @@ import (
 
 func (s *Server) customerById(ctx *gin.Context) {
 	var response responser.Response
-	var req getUserByIdRequest
+	var req customerIdRequestParam
 	var err error
 	err = ctx.ShouldBindUri(&req)
 	if err != nil {

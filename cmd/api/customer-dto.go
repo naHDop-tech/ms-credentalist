@@ -1,5 +1,5 @@
 package api
 
-type getUserByIdRequest struct {
+type customerIdRequestParam struct {
 	CustomerId *string `uri:"customer_id" binding:"omitempty,uuid"`
 }
