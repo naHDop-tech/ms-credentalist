@@ -19,8 +19,8 @@ func (s *Server) SetupRouter() {
 
 	v1 := router.Group("/api/v1")
 
-	v1.POST("/otp/send", s.sendOtp)
-	v1.POST("/otp/re-send", s.resendOtp)
+	v1.POST("/otp/send", s.sendOtp)      // TODO: need to add throttle here
+	v1.POST("/otp/re-send", s.resendOtp) // TODO: need to add throttle here
 	v1.POST("/otp/verify", s.verifyOtp)
 
 	v1A := v1.Group("/").Use(middleware.AuthMiddleware(s.tokenMaker))
@@ -28,9 +28,9 @@ func (s *Server) SetupRouter() {
 		v1A.GET("/customer/:customer_id", s.customerById)
 		v1A.GET("/customer/:customer_id/credentials", s.credentialsByCustomerId)
 
-		v1A.POST("/customer/:customer_id/credential")
+		v1A.POST("/customer/:customer_id/credentials", s.createCredential)
 
-		v1A.PATCH("/customer/:customer_id/credential/:credential_id")
+		v1A.PATCH("/customer/:customer_id/credentials/:credential_id")
 	}
 
 	s.router = router

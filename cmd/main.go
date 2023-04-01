@@ -3,7 +3,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
 	"strconv"
 
 	_ "github.com/lib/pq"
@@ -11,10 +13,12 @@ import (
 	"github.com/naHDop-tech/ms-credentalist/domain/credentials"
 	opt_auth "github.com/naHDop-tech/ms-credentalist/domain/opt-auth"
 	"github.com/naHDop-tech/ms-credentalist/domain/user"
+	"github.com/naHDop-tech/ms-credentalist/service/logger"
 	"github.com/naHDop-tech/ms-credentalist/utils"
 )
 
 func main() {
+	logger.Init(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
 	conf, err := utils.LoadConfig(".")
 	if err != nil {
 		log.Fatal("Could not read from config:", err)
